@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, type CSSProperties, type FormEvent } from "react";
+import { useActionState, useEffect, useMemo, type CSSProperties } from "react";
+import { sendContact, initialState } from "./actions/send-contact";
 
 /* -------------------------------------------------------------- */
 /*  CSS-string → React style helper (memoized)                    */
@@ -715,12 +716,10 @@ export default function Home() {
     };
   }, []);
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    alert(
-      "Thank you! This is a demo form — connect it to your backend or email service to receive messages."
-    );
-  };
+  const [contactState, contactAction, contactPending] = useActionState(
+    sendContact,
+    initialState
+  );
 
   /* -------------------------------------------------------------- */
   /*  Render                                                        */
@@ -1890,7 +1889,8 @@ export default function Home() {
               </div>
             </div>
             <form
-              onSubmit={handleSubmit}
+              key={contactState.ok === true ? "sent" : "form"}
+              action={contactAction}
               data-reveal=""
               data-anim="up"
               style={s("background:#08090b;padding:42px 38px;border-radius:6px")}
@@ -1902,25 +1902,58 @@ export default function Home() {
               >
                 Send a Message
               </p>
+
+              {/* Honeypot — invisible to humans, filled by bots */}
+              <input
+                type="text"
+                name="honeypot"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                defaultValue=""
+                style={{
+                  position: "absolute",
+                  left: "-10000px",
+                  top: "auto",
+                  width: "1px",
+                  height: "1px",
+                  overflow: "hidden",
+                  opacity: 0,
+                  pointerEvents: "none",
+                }}
+              />
+
               <div
                 className="dna-form-grid"
                 style={s(
                   "display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px"
                 )}
               >
-                <input
-                  data-cursor=""
-                  type="text"
-                  placeholder="Name"
-                  className="dna-input"
-                  style={s(
-                    "width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:4px;padding:14px 16px;font-family:var(--font-body);font-size:14px;color:#fff;outline:none"
+                <div>
+                  <input
+                    data-cursor=""
+                    type="text"
+                    name="name"
+                    placeholder="Name"
+                    required
+                    disabled={contactPending}
+                    className="dna-input"
+                    style={s(
+                      "width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:4px;padding:14px 16px;font-family:var(--font-body);font-size:14px;color:#fff;outline:none"
+                    )}
+                  />
+                  {contactState.fieldErrors?.name && (
+                    <p style={s("margin:6px 0 0;font-size:11px;color:#F87171")}>
+                      {contactState.fieldErrors.name}
+                    </p>
                   )}
-                />
+                </div>
                 <input
                   data-cursor=""
                   type="text"
+                  name="company"
                   placeholder="Company"
+                  disabled={contactPending}
                   className="dna-input"
                   style={s(
                     "width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:4px;padding:14px 16px;font-family:var(--font-body);font-size:14px;color:#fff;outline:none"
@@ -1930,18 +1963,28 @@ export default function Home() {
               <input
                 data-cursor=""
                 type="email"
+                name="email"
                 placeholder="Email"
+                required
+                disabled={contactPending}
                 className="dna-input"
                 style={s(
-                  "width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:4px;padding:14px 16px;font-family:var(--font-body);font-size:14px;color:#fff;outline:none;margin-bottom:14px"
+                  "width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:4px;padding:14px 16px;font-family:var(--font-body);font-size:14px;color:#fff;outline:none;margin-bottom:4px"
                 )}
               />
+              {contactState.fieldErrors?.email && (
+                <p style={s("margin:0 0 10px;font-size:11px;color:#F87171")}>
+                  {contactState.fieldErrors.email}
+                </p>
+              )}
               <select
                 data-cursor=""
+                name="subject"
                 className="dna-input"
                 defaultValue="Data Centre"
+                disabled={contactPending}
                 style={s(
-                  "width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:4px;padding:14px 16px;font-family:var(--font-body);font-size:14px;color:#fff;outline:none;appearance:none;margin-bottom:14px"
+                  "width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:4px;padding:14px 16px;font-family:var(--font-body);font-size:14px;color:#fff;outline:none;appearance:none;margin-top:10px;margin-bottom:14px"
                 )}
               >
                 <option style={s("background:#222")}>Data Centre</option>
@@ -1954,22 +1997,59 @@ export default function Home() {
               </select>
               <textarea
                 data-cursor=""
+                name="message"
                 placeholder="Tell us about your genesis..."
+                required
+                minLength={10}
+                maxLength={2000}
+                disabled={contactPending}
                 className="dna-input"
                 style={s(
-                  "width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:4px;padding:14px 16px;font-family:var(--font-body);font-size:14px;color:#fff;outline:none;min-height:100px;resize:vertical;margin-bottom:16px"
+                  "width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:4px;padding:14px 16px;font-family:var(--font-body);font-size:14px;color:#fff;outline:none;min-height:100px;resize:vertical;margin-bottom:6px"
                 )}
               />
+              {contactState.fieldErrors?.message && (
+                <p style={s("margin:0 0 10px;font-size:11px;color:#F87171")}>
+                  {contactState.fieldErrors.message}
+                </p>
+              )}
+
               <button
                 data-cursor=""
                 type="submit"
+                disabled={contactPending}
                 className="dna-submit"
-                style={s(
-                  "width:100%;background:linear-gradient(110deg,#34D399,#22D3EE,#A855F7);color:#08090b;font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:16px;border:none;border-radius:4px;cursor:none;transition:filter .2s"
-                )}
+                style={{
+                  ...s(
+                    "width:100%;background:linear-gradient(110deg,#34D399,#22D3EE,#A855F7);color:#08090b;font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:16px;border:none;border-radius:4px;cursor:none;transition:filter .2s;margin-top:10px"
+                  ),
+                  opacity: contactPending ? 0.6 : 1,
+                }}
               >
-                Send Message →
+                {contactPending ? "Sending…" : "Send Message →"}
               </button>
+
+              {contactState.ok === true && (
+                <div
+                  role="status"
+                  style={s(
+                    "margin-top:16px;padding:14px 16px;border-radius:4px;background:rgba(52,211,153,.14);border:1px solid rgba(52,211,153,.4);color:#A7F3D0;font-size:13.5px;line-height:1.55"
+                  )}
+                >
+                  Message sent — we&apos;ll get back to you within 1–2 business
+                  days.
+                </div>
+              )}
+              {contactState.ok === false && contactState.error && (
+                <div
+                  role="alert"
+                  style={s(
+                    "margin-top:16px;padding:14px 16px;border-radius:4px;background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.4);color:#FCA5A5;font-size:13.5px;line-height:1.55"
+                  )}
+                >
+                  {contactState.error}
+                </div>
+              )}
             </form>
           </div>
         </div>
