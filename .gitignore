@@ -1,2 +1,10 @@
 .vercel
 .DS_Store
+node_modules
+.next
+out
+dist
+next-env.d.ts
+*.log
+
+.claude/

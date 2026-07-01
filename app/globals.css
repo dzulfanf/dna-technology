@@ -1,0 +1,239 @@
+:root {
+  --font-body: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-head: var(--font-grotesk), var(--font-inter), sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #08090b;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  color: #f4f4f4;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+::selection {
+  background: #22d3ee;
+  color: #08090b;
+}
+
+@media (max-width: 860px) {
+  .dna-cursor,
+  .dna-cursor-dot {
+    display: none !important;
+  }
+}
+
+@keyframes dnaMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+@keyframes dnaMarqueeR {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes dnaSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes dnaBlink {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes dnaGrad {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.dna-split .ch {
+  display: inline-block;
+  transform: translateY(110%);
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dna-split.in .ch {
+  transform: translateY(0);
+}
+.dna-line-mask {
+  overflow: hidden;
+  display: block;
+}
+[data-cursor] {
+  cursor: none;
+}
+
+/* Hover / focus states (replaced style-hover attr) */
+.dna-hover-cta span:hover {
+  background: linear-gradient(120deg, #34d399, #22d3ee, #a855f7) !important;
+  border-color: transparent !important;
+}
+.dna-tile-d:hover {
+  border-color: rgba(52, 211, 153, 0.6) !important;
+}
+.dna-tile-n:hover {
+  border-color: rgba(34, 211, 238, 0.6) !important;
+}
+.dna-tile-a:hover {
+  border-color: rgba(168, 85, 247, 0.6) !important;
+}
+.dna-tile-sol-a:hover {
+  border-color: rgba(34, 211, 238, 0.55) !important;
+}
+.dna-tile-sol-b:hover {
+  border-color: rgba(168, 85, 247, 0.55) !important;
+}
+.dna-model-word:hover {
+  color: #fff !important;
+  text-shadow: 0 0 22px rgba(34, 211, 238, 0.55);
+}
+.dna-client-name:hover {
+  color: #fff !important;
+  text-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
+}
+.dna-input:focus,
+.dna-input:focus-visible {
+  border-color: #22d3ee !important;
+  outline: none;
+}
+.dna-submit:hover {
+  filter: brightness(1.12);
+}
+
+@media (max-width: 1024px) {
+  nav {
+    padding: 22px 32px !important;
+  }
+  #hero {
+    padding: 0 32px !important;
+  }
+  #about,
+  #work,
+  #solutions,
+  #approach,
+  #model,
+  #sectors,
+  #clients,
+  #contact {
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+  }
+  section {
+    padding-top: 104px !important;
+    padding-bottom: 104px !important;
+  }
+  .dna-bento {
+    grid-template-columns: 1fr !important;
+  }
+  .dna-bento-d {
+    grid-row: auto !important;
+  }
+  .dna-sol-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .dna-approach-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .dna-contact-grid {
+    grid-template-columns: 1fr !important;
+    gap: 54px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  * {
+    cursor: auto !important;
+  }
+  nav {
+    padding: 18px 22px !important;
+  }
+  .dna-nav-links {
+    gap: 18px !important;
+  }
+  #hero {
+    padding: 0 22px !important;
+    min-height: 92vh !important;
+  }
+  #hero h1 {
+    font-size: clamp(40px, 12.5vw, 82px) !important;
+  }
+  #about,
+  #work,
+  #solutions,
+  #approach,
+  #model,
+  #sectors,
+  #clients,
+  #contact,
+  footer {
+    padding-left: 22px !important;
+    padding-right: 22px !important;
+  }
+  section {
+    padding-top: 84px !important;
+    padding-bottom: 84px !important;
+  }
+  .dna-stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .dna-approach-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .dna-model-row {
+    grid-template-columns: auto 1fr !important;
+    gap: 8px 18px !important;
+    padding: 30px 0 !important;
+  }
+  .dna-model-row > p {
+    grid-column: 1 / -1 !important;
+  }
+  .dna-form-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .dna-logo-text {
+    display: none !important;
+  }
+  .dna-nav-links {
+    gap: 14px !important;
+  }
+  .dna-nav-links a {
+    font-size: 12px !important;
+  }
+  .dna-stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
