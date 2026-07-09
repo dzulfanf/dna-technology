@@ -17,7 +17,7 @@ const grotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "DNA Technology",
+  title: "DNA Technology | Hyperscale Infrastructure Specialist",
   description:
     "Architecting Digital Genesis — Datacentre, Network & Application, engineered as one living organism.",
   icons: {
